@@ -12,15 +12,12 @@ public class SumValue {
     static void generateRandomArray(int[] arr){
         Random r=new Random();
         for(int i = 0;i<arr.length;i++){
-            /*
-            int symbol=r.nextInt(2);
-            int absoluteValue=r.nextInt();
-            arr[i]=symbol==1?absoluteValue:-absoluteValue;//if symbol is 1, the number will be positive,else it will be negative
-       */
+
             arr[i]=r.nextInt();
         }
     }
     /*get sum of an array using 4 threads*/
+    /*
     static long sum(int[] arr){
         List<countSubSumThread>list=new ArrayList<>();
         int interval =arr.length/4;
@@ -43,7 +40,23 @@ public class SumValue {
             finalSum+=list.get(i).getSum();
         }
         return finalSum;
-    }
+    }*/
+    static long sum(int[] arr){
+        List<countSubSumThread>list=new ArrayList<>();
+        int interval =arr.length/4;
+        long finalSum=0;
+
+        for (int i=0;i<4;i++){
+            countSubSumThread thread=new countSubSumThread(i*interval,(i+1)*interval,arr);
+            list.add(thread);
+            thread.start();
+            try{
+                list.get(i).join();//this join is important, if not call join, threads cannot finish tasks when main is finished
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+            finalSum+=list.get(i).getSum();}
+        return finalSum; }
 
 
 
